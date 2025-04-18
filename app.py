@@ -11,19 +11,23 @@ st.title("🚀 Elon Musk Tweet 回帰課題：提出＆ランキング")
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# 提出フォーム
-st.markdown("### 📤 提出フォーム")
-name = st.text_input("あなたの名前（例：yamada_taro）")
-uploaded_file = st.file_uploader("提出ファイル（CSV形式, actual / predicted 列を含む）", type="csv")
+# --- アップロード ---
+st.markdown("### 📤 ステップ1: CSVファイルをアップロード")
+uploaded_file = st.file_uploader("`actual` と `predicted` 列を含むCSVファイル", type="csv")
 
-if uploaded_file is not None and name:
-    safe_name = name.strip().replace(" ", "_")
-    file_path = os.path.join(UPLOAD_DIR, f"{safe_name}.csv")
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-    st.success(f"✅ {safe_name}.csv をアップロード・保存しました！")
+# --- 名前入力 ---
+if uploaded_file is not None:
+    st.markdown("### 📝 ステップ2: あなたの名前を入力")
+    name = st.text_input("名前（半角英小文字, 例: yamada_taro）")
 
-# リーダーボード作成
+    if name and st.button("✅ 提出してランキングに追加"):
+        safe_name = name.strip().replace(" ", "_")
+        file_path = os.path.join(UPLOAD_DIR, f"{safe_name}.csv")
+        with open(file_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.success(f"✅ {safe_name}.csv として保存されました！")
+
+# --- リーダーボード作成 ---
 st.markdown("### 📊 リーダーボード（MAE昇順）")
 results = []
 for file_name in os.listdir(UPLOAD_DIR):
